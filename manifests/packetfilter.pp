@@ -10,7 +10,7 @@ class openldap::packetfilter(
 {
 
     # IPv4 rules
-    firewall { "013 ipv4 accept ldaps port from $allow_ipv4_address":
+    firewall { '013 ipv4 accept ldaps port':
         provider => 'iptables',
         chain => 'INPUT',
         proto => 'tcp',
@@ -20,7 +20,7 @@ class openldap::packetfilter(
     }
 
     # IPv6 rules
-    firewall { "013 ipv6 accept ldaps port from $allow_ipv6_address":
+    firewall { '013 ipv6 accept ldaps port':
         provider => 'ip6tables',
         chain => 'INPUT',
         proto => 'tcp',
