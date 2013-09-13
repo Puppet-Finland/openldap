@@ -55,7 +55,7 @@ class openldap(
 )
 {
 # Rationale for this is explained in init.pp of the sshd module
-if hiera('manage_openldap') != 'false' {
+if hiera('manage_openldap', 'true') != 'false' {
 
     include openldap::install
 
