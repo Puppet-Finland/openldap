@@ -54,6 +54,9 @@ class openldap(
     $allow_ipv6_address = '::1'
 )
 {
+# Rationale for this is explained in init.pp of the sshd module
+if hiera('manage_openldap') != 'false' {
+
     include openldap::install
 
     class { 'openldap::config':
@@ -72,4 +75,5 @@ class openldap(
             allow_ipv6_address => $allow_ipv6_address,
         }
     }
+}
 }
