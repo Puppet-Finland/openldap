@@ -10,4 +10,3 @@ class openldap::service {
         require => Class['openldap::install'],
     }
 }
-
