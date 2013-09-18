@@ -21,6 +21,14 @@
 #
 # [*ssl_enable*]
 #   Whether to use SSL. Defaults to 'no'. 
+# [*logging*]
+#   Loglevel to use. See OpenLDAP documentation for the details. Defaults to 
+#   'none'. This parameter is named slightly confusingly because 'loglevel' is a 
+#   Puppet metaparameter and thus reserved for other purposes.
+# [*schemas*]
+#   An array of _basenames_ of additional schema files to load. The path 
+#   '/etc/ldap/schema/' is prepended and '.schema' is appended to each 
+#   automatically.
 # [*allow_ipv4_address*]
 #   IPv4 address/subnet from which to allow connections. Defaults to 127.0.0.1.
 # [*allow_ipv6_address*]
@@ -50,6 +58,8 @@
 class openldap
 (
     $ssl_enable = 'no',    
+    $logging = 'none',
+    $schemas = '', 
     $allow_ipv4_address = '127.0.0.1',
     $allow_ipv6_address = '::1',
     $monitor_email = $::servermonitor
@@ -59,6 +69,12 @@ class openldap
 if hiera('manage_openldap', 'true') != 'false' {
 
     include openldap::install
+
+    class { 'openldap::config':
+        ssl_enable => $ssl_enable,
+        logging => $logging,
+        schemas => $schemas,
+    }
 
     include openldap::service
 

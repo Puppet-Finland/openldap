@@ -1,0 +1,93 @@
+#######################################################################
+# Specific Backend Directives for @BACKEND@:
+# Backend specific directives apply to this backend until another
+# 'backend' directive occurs
+backend		hdb
+
+#######################################################################
+# Specific Backend Directives for 'other':
+# Backend specific directives apply to this backend until another
+# 'backend' directive occurs
+#backend		<other>
+
+#######################################################################
+# Specific Directives for database #1, of type @BACKEND@:
+# Database specific directives apply to this databasse until another
+# 'database' directive occurs
+database        hdb
+
+# The base of your directory in database #1
+suffix          "<%= suffix %>"
+
+# rootdn directive for specifying a superuser on the database. This is needed
+# for syncrepl.
+rootdn          "<%= rootdn %>"
+
+# Where the database file are physically stored for database #1
+directory       "<%= datadir %>"
+
+# The dbconfig settings are used to generate a DB_CONFIG file the first
+# time slapd starts.  They do NOT override existing an existing DB_CONFIG
+# file.  You should therefore change these settings in DB_CONFIG directly
+# or remove DB_CONFIG and restart slapd for changes to take effect.
+
+# For the Debian package we use 2MB as default but be sure to update this
+# value if you have plenty of RAM
+dbconfig set_cachesize 0 <%= db_cachesize %> 0
+
+# Sven Hartge reported that he had to set this value incredibly high
+# to get slapd running at all. See http://bugs.debian.org/303057 for more
+# information.
+
+# Number of objects that can be locked at the same time.
+dbconfig set_lk_max_objects 1500
+# Number of locks (both requested and granted)
+dbconfig set_lk_max_locks 1500
+# Number of lockers
+dbconfig set_lk_max_lockers 1500
+
+# Indexing options for database #1
+<% indexes.each do |index| -%>
+index           <%= index %>
+<% end -%>
+
+# Save the time that the entry gets modified, for database #1
+lastmod         on
+
+# Checkpoint the BerkeleyDB database periodically in case of system
+# failure and to speed slapd shutdown.
+checkpoint      512 30
+
+# The userPassword by default can be changed
+# by the entry owning it if they are authenticated.
+# Others should not be able to see it, except the
+# admin entry below
+# These access lines apply to database #1 only
+access to attrs=userPassword,shadowLastChange
+        by dn="@ADMIN@" write
+        by anonymous auth
+        by self write
+        by * none
+
+# Ensure read access to the base for things like
+# supportedSASLMechanisms.  Without this you may
+# have problems with SASL not knowing what
+# mechanisms are available and the like.
+# Note that this is covered by the 'access to *'
+# ACL below too but if you change that as people
+# are wont to do you'll still need this if you
+# want SASL (and possible other things) to work 
+# happily.
+access to dn.base="" by * read
+
+# The admin dn has full write access, everyone else
+# can read everything.
+access to *
+        by dn="@ADMIN@" write
+        by * read
+
+# For Netscape Roaming support, each user gets a roaming
+# profile for which they have write access to
+#access to dn=".*,ou=Roaming,o=morsnet"
+#        by dn="@ADMIN@" write
+#        by dnattr=owner write
