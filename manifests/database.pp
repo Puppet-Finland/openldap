@@ -2,7 +2,9 @@
 # == Define: openldap::database
 #
 # Configure an OpenLDAP database. In practice, a slapd.conf configuration 
-# fragment is created and slapd.conf updated to include that fragment.
+# fragment is created and slapd.conf updated to include that fragment. Note that 
+# using this defined resource makes no sense unless 
+# openldap::config::manage_config parameter is set to 'yes'.
 #
 # == Parameters
 #
@@ -72,6 +74,9 @@ define openldap::database
         owner => openldap,
         group => openldap,
         mode => 700,
+        # This not required per se, but we don't any directories to be created 
+        # unless we've included this class.
+        require => Class['openldap::config'],
     }
 
     # Configuration fragment for this database

@@ -19,6 +19,11 @@
 #
 # == Parameters
 #
+# [*manage_config*]
+#   Whether or not to manage LDAP configuration. Valid values 'yes' and 'no'. 
+#   You want to select 'no' if you're using cn=config, or don't want to manage 
+#   slapd.conf (and some other configuration files) with this module. Defaults 
+#   to 'no'.
 # [*interface*]
 #   The IP address of the interface on which to listen for requests. Defaults to 
 #   '127.0.0.1'.
@@ -47,6 +52,7 @@
 # == Examples
 #
 # class {'openldap':
+#   manage_config => 'yes',
 #   interface => '0.0.0.0',
 #   modules => 'syncprov',
 #   ssl_enable => 'yes',
@@ -66,6 +72,7 @@
 #
 class openldap
 (
+    $manage_config = 'no',
     $interface = '127.0.0.1',
     $ssl_enable = 'no',
     $use_puppet_certs = 'yes',
@@ -86,19 +93,23 @@ if hiera('manage_openldap', 'true') != 'false' {
         include openldap::puppetcerts
     }
 
-    class { 'openldap::config':
-        ssl_enable => $ssl_enable,
-        logging => $logging,
-        schemas => $schemas,
-        modules => $modules,
-    }
+    if $manage_config == 'yes' {
 
-    # Debian requires some extra configuration steps
-    if $osfamily == 'Debian' {
-        class { 'openldap::config::debian':
-            interface => $interface,
+        class { 'openldap::config':
             ssl_enable => $ssl_enable,
+            logging => $logging,
+            schemas => $schemas,
+            modules => $modules,
         }
+
+        # Debian requires some extra configuration steps
+        if $osfamily == 'Debian' {
+            class { 'openldap::config::debian':
+                interface => $interface,
+                ssl_enable => $ssl_enable,
+            }
+        }
+
     }
 
     include openldap::service
