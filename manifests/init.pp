@@ -19,8 +19,13 @@
 #
 # == Parameters
 #
+# [*interface*]
+#   The IP address of the interface on which to listen for requests. Defaults to 
+#   '127.0.0.1'.
 # [*ssl_enable*]
 #   Whether to use SSL. Defaults to 'no'. 
+# [*use_puppet_certs*]
+#   Use puppet certs for SSL. Defaults to 'yes'.
 # [*logging*]
 #   Loglevel to use. See OpenLDAP documentation for the details. Defaults to 
 #   'none'. This parameter is named slightly confusingly because 'loglevel' is a 
@@ -29,6 +34,8 @@
 #   An array of _basenames_ of additional schema files to load. The path 
 #   '/etc/ldap/schema/' is prepended and '.schema' is appended to each 
 #   automatically.
+# [*modules*]
+#   An array of additional slapd modules to load.
 # [*allow_ipv4_address*]
 #   IPv4 address/subnet from which to allow connections. Defaults to 127.0.0.1.
 # [*allow_ipv6_address*]
@@ -40,6 +47,8 @@
 # == Examples
 #
 # class {'openldap':
+#   interface => '0.0.0.0',
+#   modules => 'syncprov',
 #   ssl_enable => 'yes',
 #   allow_ipv4_address => '192.168.0.0/24',
 #   allow_ipv6_address => '::1',
@@ -57,9 +66,12 @@
 #
 class openldap
 (
-    $ssl_enable = 'no',    
+    $interface = '127.0.0.1',
+    $ssl_enable = 'no',
+    $use_puppet_certs = 'yes',
     $logging = 'none',
     $schemas = '', 
+    $modules = '',
     $allow_ipv4_address = '127.0.0.1',
     $allow_ipv6_address = '::1',
     $monitor_email = $::servermonitor
@@ -70,10 +82,23 @@ if hiera('manage_openldap', 'true') != 'false' {
 
     include openldap::install
 
+    if ( $use_puppet_certs == 'yes' ) and ( $ssl_enable == 'yes' ) {
+        include openldap::puppetcerts
+    }
+
     class { 'openldap::config':
         ssl_enable => $ssl_enable,
         logging => $logging,
         schemas => $schemas,
+        modules => $modules,
+    }
+
+    # Debian requires some extra configuration steps
+    if $osfamily == 'Debian' {
+        class { 'openldap::config::debian':
+            interface => $interface,
+            ssl_enable => $ssl_enable,
+        }
     }
 
     include openldap::service

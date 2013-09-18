@@ -26,7 +26,11 @@
 #   alternatives such as embedding templates into templates. The only relatively 
 #   simple alternative would have been to set the ACL rules in a "magic", 
 #   site-specific file distributed by the Puppet fileserver, but that would have 
-#   moved configuration details away from the node itself.
+#   moved configuration details away from the node definition.
+# [*extra_config*]
+#   A (possibly huge) string containing additional database-specific 
+#   configuration. The same rationale applies as for $acls above. Defaults to 
+#   ''.
 #
 # == Examples
 # 
@@ -56,7 +60,8 @@ define openldap::database
     $rootdn,
     $db_cachesize = 2097152,
     $indexes = [ 'objectClass eq' ],
-    $acls
+    $acls,
+    $extra_config=''
 )
 {
 

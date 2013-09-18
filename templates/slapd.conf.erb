@@ -13,7 +13,7 @@ include         /etc/ldap/schema/cosine.schema
 include         /etc/ldap/schema/nis.schema
 include         /etc/ldap/schema/inetorgperson.schema
 
-# Additional schemas, if any
+# Additional schemas, if any...
 <% if schemas != '' then %>
 <% schemas.each do |schema| -%>
 include         /etc/ldap/schema/<%= schema %>.schema
@@ -34,12 +34,27 @@ loglevel        <%= logging %>
 modulepath	/usr/lib/ldap
 moduleload	back_hdb
 
+# Additional modules, if any...
+<% if modules != '' then %>
+<% modules.each do |entry| -%>
+moduleload  <%= entry %>
+<% end -%>
+<% end -%>
+
 # The maximum number of entries that is returned for a search operation
 sizelimit 500
 
 # The tool-threads parameter sets the actual amount of cpu's that is used
 # for indexing.
 tool-threads 1
+
+<% if ssl_enable == "yes" %>
+# SSL/TLS Settings
+TLSCACertificateFile    "/etc/ldap/ssl/openldap-ca.crt"
+TLSCertificateFile      "/etc/ldap/ssl/openldap.crt"
+TLSCertificateKeyFile   "/etc/ldap/ssl/openldap.key"
+TLSVerifyClient         demand
+<% end %>
 
 # Load the defined database configuration files
 <% databases.each do |database| -%>

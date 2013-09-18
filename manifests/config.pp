@@ -7,7 +7,8 @@ class openldap::config
 (
     $ssl_enable,
     $logging,
-    $schemas
+    $schemas,
+    $modules
 )
 {
 
@@ -30,6 +31,7 @@ class openldap::config
         ssl_enable => $ssl_enable,
         logging => $logging,
         schemas => $schemas,
+        modules => $modules,
         databases => [],
     }
 }

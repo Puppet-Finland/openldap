@@ -9,6 +9,7 @@ define openldap::config::file
     $ssl_enable,
     $logging,
     $schemas,
+    $modules,
     $databases
 )
 {
