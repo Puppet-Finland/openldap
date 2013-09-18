@@ -1,3 +1,9 @@
+#
+# == Define: openldap::config::File
+#
+# Create the slapd.conf file. The $databases variable gets it's actual content 
+# from instances of openldap::database.
+#
 define openldap::config::file
 (
     $ssl_enable,

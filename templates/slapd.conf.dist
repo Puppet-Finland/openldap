@@ -1,3 +1,5 @@
+### THIS FILE IS MANAGED BY PUPPET. ANY MANUAL CHANGES WILL GET OVERWRITTEN.
+
 # This is the main slapd configuration file. See slapd.conf(5) for more
 # info on the configuration options.
 

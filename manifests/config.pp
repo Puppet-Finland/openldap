@@ -1,3 +1,8 @@
+#
+# == Class: openldap::config
+#
+# Manage base configuration of OpenLDAP
+#
 class openldap::config
 (
     $ssl_enable,
