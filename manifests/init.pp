@@ -19,14 +19,20 @@
 #
 # == Parameters
 #
+# [*ssl_enable*]
+#   Whether to use SSL. Defaults to 'no'. 
 # [*allow_ipv4_address*]
 #   IPv4 address/subnet from which to allow connections. Defaults to 127.0.0.1.
 # [*allow_ipv6_address*]
 #   IPv6 address/subnet from which to allow connections. Defaults to ::1.
+# [*monitor_email*]
+#   Email address where local service monitoring software sends it's reports to.
+#   Defaults to global variable $::servermonitor.
 #
 # == Examples
 #
 # class {'openldap':
+#   ssl_enable => 'yes',
 #   allow_ipv4_address => '192.168.0.0/24',
 #   allow_ipv6_address => '::1',
 # }
@@ -41,9 +47,12 @@
 # BSD-license
 # See file LICENSE for details
 #
-class openldap(
+class openldap
+(
+    $ssl_enable = 'no',    
     $allow_ipv4_address = '127.0.0.1',
-    $allow_ipv6_address = '::1'
+    $allow_ipv6_address = '::1',
+    $monitor_email = $::servermonitor
 )
 {
 # Rationale for this is explained in init.pp of the sshd module
@@ -54,11 +63,14 @@ if hiera('manage_openldap', 'true') != 'false' {
     include openldap::service
 
     if tagged('monit') {
-        include openldap::monit
+        class { 'openldap::monit':
+            monitor_email => $monitor_email,
+        }
     }
 
     if tagged('packetfilter') {
         class { 'openldap::packetfilter':
+            ssl_enable => $ssl_enable,
             allow_ipv4_address => $allow_ipv4_address,
             allow_ipv6_address => $allow_ipv6_address,
         }

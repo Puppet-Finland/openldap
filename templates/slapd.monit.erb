@@ -1,3 +1,5 @@
 check process slapd with pidfile /var/run/slapd/slapd.pid
-   start program = "/etc/init.d/slapd start"
-   stop  program = "/etc/init.d/slapd stop"
+    start program = "/etc/init.d/slapd start"
+    stop  program = "/etc/init.d/slapd stop"
+    alert <%= scope.lookupvar('openldap::monit::monitor_email') %> with reminder on 480 cycles
+
