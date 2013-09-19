@@ -53,7 +53,7 @@ tool-threads 1
 TLSCACertificateFile    "/etc/ldap/ssl/openldap-ca.crt"
 TLSCertificateFile      "/etc/ldap/ssl/openldap.crt"
 TLSCertificateKeyFile   "/etc/ldap/ssl/openldap.key"
-TLSVerifyClient         demand
+TLSVerifyClient         <%= tls_verifyclient %>
 <% end %>
 
 # Load the defined database configuration files

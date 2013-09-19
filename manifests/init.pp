@@ -24,13 +24,22 @@
 #   You want to select 'no' if you're using cn=config, or don't want to manage 
 #   slapd.conf (and some other configuration files) with this module. Defaults 
 #   to 'no'.
-# [*interface*]
-#   The IP address of the interface on which to listen for requests. Defaults to 
-#   '127.0.0.1'.
+# [*listeners*]
+#   A string containing all the slapd listeners. Remember that for ldaps:// 
+#   listeners to work $ssl_enable has to be 'yes'. Example:
+#
+#   'ldaps://0.0.0.0:636 ldap://127.0.0.1:389'
+#
+#  Default value is 'ldap://127.0.0.1:389'.
 # [*ssl_enable*]
-#   Whether to use SSL. Defaults to 'no'. 
+#   Whether to use SSL. Valid values 'yes' and 'no'. Defaults to 'no'. 
+# [*tls_verifyclient*]
+#   Whether to verify client SSL certificates. Only makes sense if SSL is 
+#   enabled. Valid values 'never', 'allow', 'try' and 'demand'. Defaults to 
+#   'never'. Note that a bug in OpenLDAP may force you to use 'never' if you 
+#   want to allow non-SSL clients.
 # [*use_puppet_certs*]
-#   Use puppet certs for SSL. Defaults to 'yes'.
+#   Use puppet certs for SSL. Valid values 'yes' and 'no'. Defaults to 'yes'.
 # [*logging*]
 #   Loglevel to use. See OpenLDAP documentation for the details. Defaults to 
 #   'none'. This parameter is named slightly confusingly because 'loglevel' is a 
@@ -53,7 +62,7 @@
 #
 # class {'openldap':
 #   manage_config => 'yes',
-#   interface => '0.0.0.0',
+#   listeners => 'ldaps://0.0.0.0:636',
 #   modules => 'syncprov',
 #   ssl_enable => 'yes',
 #   allow_ipv4_address => '192.168.0.0/24',
@@ -73,8 +82,9 @@
 class openldap
 (
     $manage_config = 'no',
-    $interface = '127.0.0.1',
+    $listeners = 'ldap://127.0.0.1:389',
     $ssl_enable = 'no',
+    $tls_verifyclient = 'never',
     $use_puppet_certs = 'yes',
     $logging = 'none',
     $schemas = '', 
@@ -97,6 +107,7 @@ if hiera('manage_openldap', 'true') != 'false' {
 
         class { 'openldap::config':
             ssl_enable => $ssl_enable,
+            tls_verifyclient => $tls_verifyclient,
             logging => $logging,
             schemas => $schemas,
             modules => $modules,
@@ -105,7 +116,7 @@ if hiera('manage_openldap', 'true') != 'false' {
         # Debian requires some extra configuration steps
         if $osfamily == 'Debian' {
             class { 'openldap::config::debian':
-                interface => $interface,
+                listeners => $listeners,
                 ssl_enable => $ssl_enable,
             }
         }

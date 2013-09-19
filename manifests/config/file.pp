@@ -7,6 +7,7 @@
 define openldap::config::file
 (
     $ssl_enable,
+    $tls_verifyclient,
     $logging,
     $schemas,
     $modules,

@@ -6,6 +6,7 @@
 class openldap::config
 (
     $ssl_enable,
+    $tls_verifyclient,
     $logging,
     $schemas,
     $modules
@@ -29,6 +30,7 @@ class openldap::config
     #
     @openldap::config::file { 'default-slapd.conf':
         ssl_enable => $ssl_enable,
+        tls_verifyclient => $tls_verifyclient,
         logging => $logging,
         schemas => $schemas,
         modules => $modules,
