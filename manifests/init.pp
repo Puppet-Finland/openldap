@@ -51,9 +51,14 @@
 # [*modules*]
 #   An array of additional slapd modules to load.
 # [*allow_ipv4_address*]
-#   IPv4 address/subnet from which to allow connections. Defaults to 127.0.0.1.
+#   IPv4 address/subnet from which to allow connections. Use 'any' for any 
+#   address. Defaults to 127.0.0.1.
 # [*allow_ipv6_address*]
-#   IPv6 address/subnet from which to allow connections. Defaults to ::1.
+#   IPv6 address/subnet from which to allow connections. Use 'any' for any 
+#   address. Defaults to ::1.
+# [*allow_ports*]
+#   Port to open in the firewall (if it's enabled). Somewhat redundant, but much 
+#   simpler than creating separate defines for each listener. Defaults to '389'.
 # [*monitor_email*]
 #   Email address where local service monitoring software sends it's reports to.
 #   Defaults to global variable $::servermonitor.
@@ -91,6 +96,7 @@ class openldap
     $modules = '',
     $allow_ipv4_address = '127.0.0.1',
     $allow_ipv6_address = '::1',
+    $allow_ports = [ '389' ],
     $monitor_email = $::servermonitor
 )
 {
@@ -133,9 +139,9 @@ if hiera('manage_openldap', 'true') != 'false' {
 
     if tagged('packetfilter') {
         class { 'openldap::packetfilter':
-            ssl_enable => $ssl_enable,
             allow_ipv4_address => $allow_ipv4_address,
             allow_ipv6_address => $allow_ipv6_address,
+            allow_ports => $allow_ports,
         }
     }
 }
