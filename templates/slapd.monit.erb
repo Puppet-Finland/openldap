@@ -1,7 +1,7 @@
 ### THIS FILE IS MANAGED BY PUPPET. ANY MANUAL CHANGES WILL GET OVERWRITTEN.
 
-check process slapd with pidfile /var/run/slapd/slapd.pid
-    start program = "/etc/init.d/slapd start"
-    stop  program = "/etc/init.d/slapd stop"
+check process slapd with pidfile <%= scope.lookupvar('openldap::params::pidfile') %>
+    start program = <%= scope.lookupvar('openldap::params::service_start') %>
+    stop program = <%= scope.lookupvar('openldap::params::service_stop') %>
     alert <%= scope.lookupvar('openldap::monit::monitor_email') %> with reminder on 480 cycles
 

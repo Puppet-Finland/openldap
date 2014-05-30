@@ -8,6 +8,9 @@ class openldap::monit
     $monitor_email
 )
 {
+
+    include openldap::params
+
     monit::fragment { 'openldap-slapd.monit':
         modulename => 'openldap',
         basename => 'slapd',

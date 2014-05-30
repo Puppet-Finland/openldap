@@ -5,13 +5,15 @@
 #
 class openldap::install {
 
+    include openldap::params
+
     package { 'openldap-slapd':
-        name => 'slapd',
+        name => "${::openldap::params::slapd_package_name}",
         ensure => installed,
     }
 
     package { 'openldap-ldap-utils':
-        name => 'ldap-utils',
+        name => "${::openldap::params::ldap_utils_package_name}",
         ensure => installed,
     }
 
