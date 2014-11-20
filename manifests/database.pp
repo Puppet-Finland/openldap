@@ -36,24 +36,24 @@
 #
 # == Examples
 # 
-# openldap::database { 'company':
-#   suffix => 'dc=company,dc=com',
-#   rootdn => 'cn=admin,dc=company,dc=com',
-#   acls =>
-# '
-# access to attrs=userPassword,shadowLastChange
-#        by dn="cn=admin,dc=company,dc=com" write
-#        by anonymous auth
-#        by self write
-#        by * none
-#
-# access to dn.base="" by * read
-#
-# access to *
-#        by dn="cn=admin,dc=company,dc=com" write
-#        by * read
-# '
-# }
+#   openldap::database { 'company':
+#       suffix => 'dc=company,dc=com',
+#       rootdn => 'cn=admin,dc=company,dc=com',
+#       acls =>
+#   '
+#   access to attrs=userPassword,shadowLastChange
+#       by dn="cn=admin,dc=company,dc=com" write
+#       by anonymous auth
+#       by self write
+#       by * none
+#   
+#   access to dn.base="" by * read
+#   
+#   access to *
+#       by dn="cn=admin,dc=company,dc=com" write
+#       by * read
+#   '
+#   }
 #
 define openldap::database
 (
