@@ -18,22 +18,22 @@ class openldap::puppetcerts {
     }
 
     exec { 'copy-puppet-cert-to-openldap.crt':
-        command => "cp -f ${::puppetagent::params::ssl_dir}/certs/$fqdn.pem /etc/ldap/ssl/openldap.crt",
-        unless => "cmp ${::puppetagent::params::ssl_dir}/certs/$fqdn.pem /etc/ldap/ssl/openldap.crt",
+        command => "cp -f ${::puppetagent::params::ssldir}/certs/$fqdn.pem /etc/ldap/ssl/openldap.crt",
+        unless => "cmp ${::puppetagent::params::ssldir}/certs/$fqdn.pem /etc/ldap/ssl/openldap.crt",
         path => ['/bin', '/usr/bin/' ],
         require => File['openldap-ssl-dir'],
     }
 
     exec { 'copy-puppet-key-to-openldap.key':
-        command => "cp -f ${::puppetagent::params::ssl_dir}/private_keys/$fqdn.pem /etc/ldap/ssl/openldap.key",
-        unless => "cmp ${::puppetagent::params::ssl_dir}/private_keys/$fqdn.pem /etc/ldap/ssl/openldap.key",
+        command => "cp -f ${::puppetagent::params::ssldir}/private_keys/$fqdn.pem /etc/ldap/ssl/openldap.key",
+        unless => "cmp ${::puppetagent::params::ssldir}/private_keys/$fqdn.pem /etc/ldap/ssl/openldap.key",
         path => ['/bin', '/usr/bin/' ],
         require => File['openldap-ssl-dir'],
     }
 
     exec { 'copy-puppet-ca-cert-to-openldap-ca.crt':
-        command => "cp -f ${::puppetagent::params::ssl_dir}/certs/ca.pem /etc/ldap/ssl/openldap-ca.crt",
-        unless => "cmp ${::puppetagent::params::ssl_dir}/certs/ca.pem /etc/ldap/ssl/openldap-ca.crt",
+        command => "cp -f ${::puppetagent::params::ssldir}/certs/ca.pem /etc/ldap/ssl/openldap-ca.crt",
+        unless => "cmp ${::puppetagent::params::ssldir}/certs/ca.pem /etc/ldap/ssl/openldap-ca.crt",
         path => ['/bin', '/usr/bin/' ],
         require => File['openldap-ssl-dir'],
     }
