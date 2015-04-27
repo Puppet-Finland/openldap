@@ -1,0 +1,14 @@
+{
+  "name": "puppetfinland-openldap",
+  "version": "0.3.1",
+  "author": "Puppet-Finland team",
+  "license": "BSD license",
+  "summary": "Setup openldap",
+  "source": "https://github.com/Puppet-Finland/openldap.git",
+  "project_page": "https://github.com/Puppet-Finland/openldap",
+  "dependencies": [
+    { "name": "puppetfinland/monit", "version_requirement": ">= 0.5.0" },
+    { "name": "puppetfinland/packetfilter", "version_requirement": ">= 0.5.0" },
+    { "name": "puppetfinland/os", "version_requirement": ">= 0.5.5" }
+  ]
+}
