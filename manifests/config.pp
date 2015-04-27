@@ -10,16 +10,17 @@ class openldap::config
     $logging,
     $schemas,
     $modules
-)
+
+) inherits openldap::params
 {
 
     # Ensure a fragment directory is present
     file { 'openldap-slapd.conf.d':
-        name => '/etc/ldap/slapd.conf.d',
         ensure => directory,
-        owner => root,
-        group => openldap,
-        mode => 750,
+        name   => '/etc/ldap/slapd.conf.d',
+        owner  => $::os::params::adminuser,
+        group  => $::openldap::params::slapd_group,
+        mode   => '0750',
     }
 
     # Create the actual configuration file, but don't realize it yet. For 
@@ -29,11 +30,11 @@ class openldap::config
     # rsnapshot/manifests/config.pp
     #
     @openldap::config::file { 'default-slapd.conf':
-        ssl_enable => $ssl_enable,
+        ssl_enable       => $ssl_enable,
         tls_verifyclient => $tls_verifyclient,
-        logging => $logging,
-        schemas => $schemas,
-        modules => $modules,
-        databases => [],
+        logging          => $logging,
+        schemas          => $schemas,
+        modules          => $modules,
+        databases        => [],
     }
 }

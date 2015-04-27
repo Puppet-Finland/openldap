@@ -7,15 +7,16 @@ class openldap::config::debian
 (
     $listeners,
     $ssl_enable
-)
+
+) inherits openldap::params
 {
     file { 'openldap-slapd':
-        name => '/etc/default/slapd',
-        ensure => present,
+        ensure  => present,
+        name    => '/etc/default/slapd',
         content => template('openldap/slapd.erb'),
-        owner => root,
-        group => root,
-        mode => 644,
+        owner   => $::os::params::adminuser,
+        group   => $::os::params::admingroup,
+        mode    => '0644',
         require => Class['openldap::install'],
     }
 }

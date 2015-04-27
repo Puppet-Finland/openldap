@@ -6,13 +6,14 @@
 class openldap::monit
 (
     $monitor_email
-)
+
+) inherits openldap::params
 {
 
-    include openldap::params
+    include ::openldap::params
 
     monit::fragment { 'openldap-slapd.monit':
         modulename => 'openldap',
-        basename => 'slapd',
+        basename   => 'slapd',
     }
 }

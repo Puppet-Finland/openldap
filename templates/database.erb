@@ -67,4 +67,4 @@ checkpoint      512 30
 <%= acls %>
 
 # Extra configuration (replication, overlays, etc.)
-<%= extra_config %>
+<% if @extra_config %><%= extra_config %><% end -%>

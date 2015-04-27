@@ -19,6 +19,9 @@
 #
 # == Parameters
 #
+# [*manage*]
+#   Whether to manage OpenLDAP with Puppet or not. Valid values are 'yes' 
+#   (default) and 'no'.
 # [*manage_config*]
 #   Whether or not to manage LDAP configuration. Valid values 'yes' and 'no'. 
 #   You want to select 'no' if you're using cn=config, or don't want to manage 
@@ -86,62 +89,63 @@
 #
 class openldap
 (
+    $manage = 'yes',
     $manage_config = 'no',
     $listeners = 'ldap://127.0.0.1:389',
     $ssl_enable = 'no',
     $tls_verifyclient = 'never',
     $use_puppet_certs = 'yes',
     $logging = 'none',
-    $schemas = '', 
-    $modules = '',
+    $schemas = undef,
+    $modules = undef,
     $allow_ipv4_address = '127.0.0.1',
     $allow_ipv6_address = '::1',
     $allow_ports = [ '389' ],
     $monitor_email = $::servermonitor
 )
 {
-# Rationale for this is explained in init.pp of the sshd module
-if hiera('manage_openldap', 'true') != 'false' {
 
-    include openldap::install
+if $manage == 'yes' {
+
+    include ::openldap::install
 
     if ( $use_puppet_certs == 'yes' ) and ( $ssl_enable == 'yes' ) {
-        include openldap::puppetcerts
+        include ::openldap::puppetcerts
     }
 
     if $manage_config == 'yes' {
 
-        class { 'openldap::config':
-            ssl_enable => $ssl_enable,
+        class { '::openldap::config':
+            ssl_enable       => $ssl_enable,
             tls_verifyclient => $tls_verifyclient,
-            logging => $logging,
-            schemas => $schemas,
-            modules => $modules,
+            logging          => $logging,
+            schemas          => $schemas,
+            modules          => $modules,
         }
 
         # Debian requires some extra configuration steps
-        if $osfamily == 'Debian' {
-            class { 'openldap::config::debian':
-                listeners => $listeners,
+        if $::osfamily == 'Debian' {
+            class { '::openldap::config::debian':
+                listeners  => $listeners,
                 ssl_enable => $ssl_enable,
             }
         }
 
     }
 
-    include openldap::service
+    include ::openldap::service
 
     if tagged('monit') {
-        class { 'openldap::monit':
+        class { '::openldap::monit':
             monitor_email => $monitor_email,
         }
     }
 
     if tagged('packetfilter') {
-        class { 'openldap::packetfilter':
+        class { '::openldap::packetfilter':
             allow_ipv4_address => $allow_ipv4_address,
             allow_ipv6_address => $allow_ipv6_address,
-            allow_ports => $allow_ports,
+            allow_ports        => $allow_ports,
         }
     }
 }

@@ -3,13 +3,11 @@
 #
 # Enable openldap service
 #
-class openldap::service {
-
-    include openldap::params
+class openldap::service inherits openldap::params {
 
     service { 'openldap':
-        name => "${::openldap::params::service_name}",
-        enable => true,
+        name    => $::openldap::params::service_name,
+        enable  => true,
         require => Class['openldap::install'],
     }
 }

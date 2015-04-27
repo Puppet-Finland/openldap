@@ -3,18 +3,16 @@
 #
 # Install OpenLDAP and OpenLDAP utilities
 #
-class openldap::install {
-
-    include openldap::params
+class openldap::install inherits openldap::params {
 
     package { 'openldap-slapd':
-        name => "${::openldap::params::slapd_package_name}",
         ensure => installed,
+        name   => $::openldap::params::slapd_package_name,
     }
 
     package { 'openldap-ldap-utils':
-        name => "${::openldap::params::ldap_utils_package_name}",
         ensure => installed,
+        name   => $::openldap::params::ldap_utils_package_name,
     }
 
 }

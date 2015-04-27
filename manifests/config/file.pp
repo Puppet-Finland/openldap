@@ -14,12 +14,14 @@ define openldap::config::file
     $databases
 )
 {
+    include ::openldap::params
+
     file { 'openldap-slapd.conf':
-        name => '/etc/ldap/slapd.conf',
-        ensure => present,
+        ensure  => present,
+        name    => '/etc/ldap/slapd.conf',
         content => template('openldap/slapd.conf.erb'),
-        owner => root,
-        group => openldap,
-        mode => 640,
+        owner   => $::os::params::adminuser,
+        group   => $::openldap::params::slapd_group,
+        mode    => '0640',
     }
 }
