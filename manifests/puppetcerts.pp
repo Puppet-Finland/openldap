@@ -6,6 +6,8 @@
 #
 class openldap::puppetcerts inherits openldap::params {
 
+    include ::puppetagent
+
     file { 'openldap-ssl-dir':
         ensure  => directory,
         name    => '/etc/ldap/ssl',
