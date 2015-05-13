@@ -37,8 +37,7 @@ class openldap::packetfilter
         chain    => 'INPUT',
         proto    => 'tcp',
         port     => $allow_ports,
-        source   => $source_ipv4,
+        source   => $source_ipv6,
         action   => 'accept',
     }
-
 }
