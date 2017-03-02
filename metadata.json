@@ -1,6 +1,6 @@
 {
   "name": "puppetfinland-openldap",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "author": "Puppet-Finland team",
   "license": "BSD license",
   "summary": "Setup openldap",

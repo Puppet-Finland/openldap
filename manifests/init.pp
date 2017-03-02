@@ -20,13 +20,12 @@
 # == Parameters
 #
 # [*manage*]
-#   Whether to manage OpenLDAP with Puppet or not. Valid values are 'yes' 
-#   (default) and 'no'.
+#   Whether to manage OpenLDAP with Puppet or not. Valid values are true 
+#   (default) and false.
 # [*manage_config*]
-#   Whether or not to manage LDAP configuration. Valid values 'yes' and 'no'. 
-#   You want to select 'no' if you're using cn=config, or don't want to manage 
-#   slapd.conf (and some other configuration files) with this module. Defaults 
-#   to 'no'.
+#   Whether or not to manage LDAP configuration. Valid values true and false 
+#   (default). Use the default (false) if you're using cn=config, or don't want 
+#   to manage slapd.conf (and some other configuration files) with this module.
 # [*listeners*]
 #   A string containing all the slapd listeners. Remember that for ldaps:// 
 #   listeners to work $ssl_enable has to be 'yes'. Example:
@@ -35,14 +34,14 @@
 #
 #  Default value is 'ldap://127.0.0.1:389'.
 # [*ssl_enable*]
-#   Whether to use SSL. Valid values 'yes' and 'no'. Defaults to 'no'. 
+#   Whether to use SSL. Valid values true and false (default).
 # [*tls_verifyclient*]
 #   Whether to verify client SSL certificates. Only makes sense if SSL is 
 #   enabled. Valid values 'never', 'allow', 'try' and 'demand'. Defaults to 
 #   'never'. Note that a bug in OpenLDAP may force you to use 'never' if you 
 #   want to allow non-SSL clients.
 # [*use_puppet_certs*]
-#   Use puppet certs for SSL. Valid values 'yes' and 'no'. Defaults to 'yes'.
+#   Use puppet certs for SSL. Valid values true (default) and false.
 # [*logging*]
 #   Loglevel to use. See OpenLDAP documentation for the details. Defaults to 
 #   'none'. This parameter is named slightly confusingly because 'loglevel' is a 
@@ -89,31 +88,31 @@
 #
 class openldap
 (
-    $manage = 'yes',
-    $manage_config = 'no',
-    $listeners = 'ldap://127.0.0.1:389',
-    $ssl_enable = 'no',
-    $tls_verifyclient = 'never',
-    $use_puppet_certs = 'yes',
-    $logging = 'none',
-    $schemas = undef,
-    $modules = undef,
-    $allow_ipv4_address = '127.0.0.1',
-    $allow_ipv6_address = '::1',
-    $allow_ports = [ '389' ],
-    $monitor_email = $::servermonitor
+    Boolean $manage = true,
+    Boolean $manage_config = false,
+            $listeners = 'ldap://127.0.0.1:389',
+    Boolean $ssl_enable = false,
+            $tls_verifyclient = 'never',
+    Boolean $use_puppet_certs = true,
+            $logging = 'none',
+            $schemas = undef,
+            $modules = undef,
+            $allow_ipv4_address = '127.0.0.1',
+            $allow_ipv6_address = '::1',
+            $allow_ports = [ '389' ],
+            $monitor_email = $::servermonitor
 )
 {
 
-if $manage == 'yes' {
+if $manage {
 
     include ::openldap::install
 
-    if ( $use_puppet_certs == 'yes' ) and ( $ssl_enable == 'yes' ) {
+    if ( $use_puppet_certs ) and ( $ssl_enable ) {
         include ::openldap::puppetcerts
     }
 
-    if $manage_config == 'yes' {
+    if $manage_config {
 
         class { '::openldap::config':
             ssl_enable       => $ssl_enable,
