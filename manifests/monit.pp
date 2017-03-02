@@ -12,8 +12,9 @@ class openldap::monit
 
     include ::openldap::params
 
-    monit::fragment { 'openldap-slapd.monit':
+    @monit::fragment { 'openldap-slapd.monit':
         modulename => 'openldap',
         basename   => 'slapd',
+        tag        => 'default',
     }
 }

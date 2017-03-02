@@ -26,6 +26,10 @@
 #   Whether or not to manage LDAP configuration. Valid values true and false 
 #   (default). Use the default (false) if you're using cn=config, or don't want 
 #   to manage slapd.conf (and some other configuration files) with this module.
+# [*manage_packetfilter*]
+#   Manage packet filtering rules. Valid values are true (default) and false.
+# [*manage_monit*]
+#   Manage monit rules. Valid values are true (default) and false.
 # [*listeners*]
 #   A string containing all the slapd listeners. Remember that for ldaps:// 
 #   listeners to work $ssl_enable has to be 'yes'. Example:
@@ -79,6 +83,8 @@ class openldap
 (
     Boolean $manage = true,
     Boolean $manage_config = false,
+    Boolean $manage_packetfilter = true,
+    Boolean $manage_monit = true,
             $listeners = 'ldap://127.0.0.1:389',
     Boolean $ssl_enable = false,
             $tls_verifyclient = 'never',
@@ -123,13 +129,13 @@ if $manage {
 
     include ::openldap::service
 
-    if tagged('monit') {
+    if $manage_monit {
         class { '::openldap::monit':
             monitor_email => $monitor_email,
         }
     }
 
-    if tagged('packetfilter') {
+    if $manage_packetfilter {
         class { '::openldap::packetfilter':
             allow_ipv4_address => $allow_ipv4_address,
             allow_ipv6_address => $allow_ipv6_address,
