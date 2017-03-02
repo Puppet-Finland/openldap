@@ -65,17 +65,6 @@
 #   Email address where local service monitoring software sends it's reports to.
 #   Defaults to global variable $::servermonitor.
 #
-# == Examples
-#
-#   class {'openldap':
-#       manage_config => 'yes',
-#       listeners => 'ldaps://0.0.0.0:636',
-#       modules => 'syncprov',
-#       ssl_enable => 'yes',
-#       allow_ipv4_address => '192.168.0.0/24',
-#       allow_ipv6_address => '::1',
-#   }
-#
 # == Authors
 #
 # Samuli Seppänen <samuli.seppanen@gmail.com>
