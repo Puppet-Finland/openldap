@@ -32,7 +32,7 @@
 #   Manage monit rules. Valid values are true (default) and false.
 # [*listeners*]
 #   A string containing all the slapd listeners. Remember that for ldaps:// 
-#   listeners to work $ssl_enable has to be 'yes'. Example:
+#   listeners to work $ssl_enable has to be true. Example:
 #
 #   'ldaps://0.0.0.0:636 ldap://127.0.0.1:389'
 #
